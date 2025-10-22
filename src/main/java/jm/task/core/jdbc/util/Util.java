@@ -20,16 +20,28 @@ public class Util {
     private static final String DB_USER = "root";
     private static final String DB_PASSWORD = "root";
 
-//    public static Connection getConnection() throws SQLException {
-//        try {
-//            Class.forName(DB_DRIVER);
-//        } catch (ClassNotFoundException e) {
-//            throw new SQLException(e);
-//        }
-//        return DriverManager.getConnection(DB_URL, DB_USER, DB_PASSWORD);
-//    }
+    private Util() {
+    }
+
+    public static Connection getConnection() throws SQLException {
+        try {
+            Class.forName(DB_DRIVER);
+        } catch (ClassNotFoundException e) {
+            throw new SQLException(e);
+        }
+        return DriverManager.getConnection(DB_URL, DB_USER, DB_PASSWORD);
+    }
+
+    public static void closeConnection(Connection connection) {
+        try {
+            connection.close();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
 
     private static SessionFactory sessionFactory;
+
     public static SessionFactory getSessionFactory() {
         if (sessionFactory == null) {
             try {
@@ -44,7 +56,7 @@ public class Util {
 
                 settings.put(Environment.CURRENT_SESSION_CONTEXT_CLASS, "thread");
 
-                settings.put(Environment.HBM2DDL_AUTO, "create");
+                settings.put(Environment.HBM2DDL_AUTO, "update");
 
                 Configuration configuration = new Configuration();
                 configuration.setProperties(settings);
@@ -60,7 +72,10 @@ public class Util {
         }
         return sessionFactory;
     }
-    public static void shutdown() {
-        getSessionFactory().close();
+
+    public static void closeSessionFactory() {
+        if (sessionFactory != null) {
+            sessionFactory.close();
+        }
     }
 }
