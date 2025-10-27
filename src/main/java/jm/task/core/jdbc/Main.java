@@ -10,9 +10,7 @@ import java.util.List;
 
 public class Main {
     public static void main(String[] args) throws SQLException {
-        // реализуйте алгоритм здесь
         UserService userDaoHibernate = new UserServiceImpl();
-        UserService userDaoJDBC = new UserServiceImpl();
         userDaoHibernate.createUsersTable();
         try {
             addUser(userDaoHibernate, "Bruce", "Wayne", (byte) 40);

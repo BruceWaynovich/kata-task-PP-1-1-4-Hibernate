@@ -19,6 +19,7 @@ public class Util {
     private static final String DB_URL = "jdbc:mysql://localhost:3306/test";
     private static final String DB_USER = "root";
     private static final String DB_PASSWORD = "root";
+    private static SessionFactory sessionFactory;
 
     private Util() {
     }
@@ -40,8 +41,6 @@ public class Util {
         }
     }
 
-    private static SessionFactory sessionFactory;
-
     public static SessionFactory getSessionFactory() {
         if (sessionFactory == null) {
             try {
@@ -51,17 +50,16 @@ public class Util {
                 settings.put(Environment.USER, DB_USER);
                 settings.put(Environment.PASS, DB_PASSWORD);
                 settings.put(Environment.DIALECT, "org.hibernate.dialect.MySQL5Dialect");
-
                 settings.put(Environment.SHOW_SQL, "true");
-
                 settings.put(Environment.CURRENT_SESSION_CONTEXT_CLASS, "thread");
-
                 settings.put(Environment.HBM2DDL_AUTO, "update");
 
                 Configuration configuration = new Configuration();
                 configuration.setProperties(settings);
                 configuration.addAnnotatedClass(User.class);
-                ServiceRegistry serviceRegistry = new StandardServiceRegistryBuilder().applySettings(configuration.getProperties()).build();
+                ServiceRegistry serviceRegistry = new StandardServiceRegistryBuilder()
+                        .applySettings(configuration.getProperties())
+                        .build();
 
                 sessionFactory = configuration.buildSessionFactory(serviceRegistry);
                 System.out.println("Соединение установлено");
